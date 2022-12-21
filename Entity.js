@@ -1,28 +1,62 @@
-export default class entity {
-  constructor(id, name, health, attack, posX, posY) {
-    this.id = id;
-    this.name = name;
-    this.health = health;
-    this.attack = attack;
-    this.posX = posX;
-    this.posY = posY;
-  }
+export default class entity
+{
+    constructor(id, name, health, attack, posX, posY) {
+        this.id = id;
+        this.name = name;
+        this.health = health;
+        this.attack = attack;
+        this.X = posX;
+        this.Y = posY;
+        this.Spawned = false
+        this.entity = true
+      }
 
-  //set
+      async on_collider_2D(EntityCollided)
+      {
+        EntityCollided = EntityCollided.entity ? EntityCollided : null
+        console.log(" COLLIDER_2D ")
+      }
 
-  setHealth(health) {
-    this.health = health;
-  }
+      // get
+      getId() {
+        return this.id;
+      }
 
-  setAttack(attack) {
-    this.attack = attack;
-  }
+      getName() {
+        return this.name;
+      }
 
-  setPosX(posX) {
-    this.X = posX;
-  }
+      getHealth() {
+        return this.health;
+      }
 
-  setPosY(posY) {
-    this.Y = posY;
-  }
+      getAttack() {
+        return this.attack;
+      }
+
+      getPosX() {
+        return this.X;
+      }
+
+      getPosY() {
+        return this.Y;
+      }
+
+      //set
+
+      setHealth(health) {
+        this.health = health;
+      }
+
+      setAttack(attack) {
+        this.attack = attack;
+      }
+
+      setPosX(posX) {
+        this.X = posX;
+      }
+
+      setPosY(posY) {
+        this.Y = posY;
+      }
 }
