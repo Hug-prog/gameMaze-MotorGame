@@ -20,6 +20,10 @@ export default new (class Party {
     bottom: "s",
   };
 
+  #objMaze = {
+    killBots: false,
+  };
+
   #maze = [];
 
   #width = 0;
@@ -94,6 +98,14 @@ export default new (class Party {
     ).forEach(v => v.remove());
   }
 
+  // create and render in maze an obj for player
+  #renderObjMaze(maze, Object) {
+    this.X = RandomNumber(this.GetWidth(), this.GetHeight());
+    this.Y = RandomNumber(this.GetWidth(), this.GetHeight());
+    maze[this.X][this.Y] = Object;
+  }
+
+  // create and render wall player
   #renderArrow(maze, wall, arrow, arrowDirection, player) {
     arrow.setPosX(player.posX);
     arrow.setPosY(player.posY);
@@ -148,6 +160,16 @@ export default new (class Party {
   StopRender() {
     this.#render = false;
 
+    return this;
+  }
+
+  StartRenderObj(obj) {
+    this.#objMaze.obj = true;
+    return this;
+  }
+
+  StopRenderObj(obj) {
+    this.#objMaze.obj = false;
     return this;
   }
 
@@ -251,6 +273,7 @@ export default new (class Party {
     return _m;
   }
 
+  // get direction of mobs
   #MoveBots(bot) {
     let direction = ["up", "down", "left", "right"];
     let random = direction[Math.floor(Math.random() * direction.length)];
@@ -324,7 +347,6 @@ export default new (class Party {
           this.#MoveBots(bot);
           this.pushHealth(this.player.health);
         }
-
         await sleep(this.#frame_rate);
       }
     })();
@@ -388,11 +410,16 @@ export default new (class Party {
   }
 
   RunGame() {
+    this.SpawnBot();
+
+    this.#renderObjMaze(this.#maze, this.#objMaze.killBots);
+
     document.addEventListener("keydown", event => {
       if (
         (event.key.toLowerCase() == this.#CONTROL.up &&
           this.#maze[this.player.posY - 1][this.player.posX] == 1) ||
-        this.#maze[this.player.posY - 1][this.player.posX] == "b"
+        this.#maze[this.player.posY - 1][this.player.posX] == "b" ||
+        this.#maze[this.player.posY - 1][this.player.posX] == "arr"
       ) {
         if (this.#maze[this.player.posY - 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
@@ -407,7 +434,8 @@ export default new (class Party {
       if (
         (event.key.toLowerCase() == this.#CONTROL.bottom &&
           this.#maze[this.player.posY + 1][this.player.posX] == 1) ||
-        this.#maze[this.player.posY + 1][this.player.posX] == "b"
+        this.#maze[this.player.posY + 1][this.player.posX] == "b" ||
+        this.#maze[this.player.posY + 1][this.player.posX] == "arr"
       ) {
         if (this.#maze[this.player.posY + 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
@@ -422,7 +450,8 @@ export default new (class Party {
       if (
         (event.key.toLowerCase() == this.#CONTROL.left &&
           this.#maze[this.player.posY][this.player.posX - 1] == 1) ||
-        this.#maze[this.player.posY][this.player.posX - 1] == "b"
+        this.#maze[this.player.posY][this.player.posX - 1] == "b" ||
+        this.#maze[this.player.posY][this.player.posX - 1] == "arr"
       ) {
         if (this.#maze[this.player.posY][this.player.posX - 1] == "b") {
           this.player.setHealth(this.player.health - 3);
@@ -437,7 +466,8 @@ export default new (class Party {
       if (
         (event.key.toLowerCase() == this.#CONTROL.right &&
           this.#maze[this.player.posY][this.player.posX + 1] == 1) ||
-        this.#maze[this.player.posY][this.player.posX + 1] == "b"
+        this.#maze[this.player.posY][this.player.posX + 1] == "b" ||
+        this.#maze[this.player.posY][this.player.posX + 1] == "arr"
       ) {
         if (this.#maze[this.player.posY][this.player.posX + 1] == "b") {
           this.player.setHealth(this.player.health - 3);
