@@ -643,14 +643,49 @@ export default new class Party
           this.#maze[Player.Y][Player.X] = 1;
           Player.X += 1
           this.#maze[Player.Y][Player.X] = "p";
-        }
+      }
 
         if (event.key == this.#CONTROL.attack.right)
                     this.#FireLaser(Engine.RAYCAST.up)
 
+      // arrow left
+      if (event.key == "ArrowLeft") {
+        this.coli = Engine.RayCast(
+          this.#maze,
+          { x: this.player.posX, y: this.player.posY },
+          this.#width,
+          Engine.RAYCAST.left
+        );
+        //console.log(this.coli);
+        this.#renderArrow(
+          this.#maze,
+          this.coli.size,
+          this.arrow,
+          "left",
+          this.player
+        );
+      }
 
+      // arrow right
+      if (event.key == "ArrowRight") {
+        console.log("x:", this.player.posX, "y:", this.player.posY);
+        this.coli = Engine.RayCast(
+          this.#maze,
+          { x: this.player.posX, y: this.player.posY },
+          this.#width,
+          Engine.RAYCAST.right
+        );
+        //console.log(this.coli);
+        this.#renderArrow(
+          this.#maze,
+          this.coli.size,
+          this.arrow,
+          "right",
+          this.player
+        );
+      }
 
-      });
+  });
 
       this.StartBots();
       this.StartRender();
