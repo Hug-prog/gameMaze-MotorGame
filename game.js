@@ -21,7 +21,7 @@ export default new (class Party {
   };
 
   #objMaze = {
-    killBots: false,
+    bostPv: false,
   };
 
   #maze = [];
@@ -81,6 +81,8 @@ export default new (class Party {
           ligne += '<td name="tdMobs" alt=""></td>';
         } else if (vw == "arr") {
           ligne += '<td name="arr" bgcolor="red" class="arr" alt=""></td>';
+        } else if (vw == "obj") {
+          ligne += '<td name="arr" bgcolor="green" class="arr" alt=""></td>';
         } else {
           ligne += '<td bgcolor="black" alt=""></td>';
         }
@@ -100,9 +102,13 @@ export default new (class Party {
 
   // create and render in maze an obj for player
   #renderObjMaze(maze, Object) {
-    this.X = RandomNumber(this.GetWidth(), this.GetHeight());
-    this.Y = RandomNumber(this.GetWidth(), this.GetHeight());
-    maze[this.X][this.Y] = Object;
+    if (this.#objMaze.bostPv) {
+      this.objPosX = RandomNumber(2, 15);
+      this.objPosY = RandomNumber(2, 15);
+      console.log(this.objPosX, this.objPosY);
+      console.log(Object);
+      maze[this.objPosX][this.objPosY] = `${Object}`;
+    }
   }
 
   // create and render wall player
@@ -164,12 +170,13 @@ export default new (class Party {
   }
 
   StartRenderObj(obj) {
-    this.#objMaze.obj = true;
+    this.#objMaze[obj] = true;
+    this.#renderObjMaze(this.#maze, "obj");
     return this;
   }
 
   StopRenderObj(obj) {
-    this.#objMaze.obj = false;
+    this.#objMaze[obj] = false;
     return this;
   }
 
@@ -410,19 +417,29 @@ export default new (class Party {
   }
 
   RunGame() {
+    // put bots in maze
     this.SpawnBot();
 
-    this.#renderObjMaze(this.#maze, this.#objMaze.killBots);
+    // put obj player in maze
+    this.StartRenderObj("bostPv");
+
+    //this.#renderObjMaze(this.#maze, this.#objMaze.bostPv);
 
     document.addEventListener("keydown", event => {
       if (
         (event.key.toLowerCase() == this.#CONTROL.up &&
           this.#maze[this.player.posY - 1][this.player.posX] == 1) ||
         this.#maze[this.player.posY - 1][this.player.posX] == "b" ||
-        this.#maze[this.player.posY - 1][this.player.posX] == "arr"
+        this.#maze[this.player.posY - 1][this.player.posX] == "arr" ||
+        this.#maze[this.player.posY - 1][this.player.posX] == "obj"
       ) {
         if (this.#maze[this.player.posY - 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
+        } else if (
+          this.#maze[this.player.posY - 1][this.player.posX] == "obj"
+        ) {
+          this.player.setHealth(this.player.health + 10);
+          this.#maze[this.player.posY - 1][this.player.posX] = 1;
         } else {
           this.#maze[this.player.posY][this.player.posX] = 1;
           this.player.posY -= 1;
@@ -435,10 +452,16 @@ export default new (class Party {
         (event.key.toLowerCase() == this.#CONTROL.bottom &&
           this.#maze[this.player.posY + 1][this.player.posX] == 1) ||
         this.#maze[this.player.posY + 1][this.player.posX] == "b" ||
-        this.#maze[this.player.posY + 1][this.player.posX] == "arr"
+        this.#maze[this.player.posY + 1][this.player.posX] == "arr" ||
+        this.#maze[this.player.posY + 1][this.player.posX] == "obj"
       ) {
         if (this.#maze[this.player.posY + 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
+        } else if (
+          this.#maze[this.player.posY + 1][this.player.posX] == "obj"
+        ) {
+          this.player.setHealth(this.player.health + 10);
+          this.#maze[this.player.posY + 1][this.player.posX] = 1;
         } else {
           this.#maze[this.player.posY][this.player.posX] = 1;
           this.player.posY += 1;
@@ -451,10 +474,16 @@ export default new (class Party {
         (event.key.toLowerCase() == this.#CONTROL.left &&
           this.#maze[this.player.posY][this.player.posX - 1] == 1) ||
         this.#maze[this.player.posY][this.player.posX - 1] == "b" ||
-        this.#maze[this.player.posY][this.player.posX - 1] == "arr"
+        this.#maze[this.player.posY][this.player.posX - 1] == "arr" ||
+        this.#maze[this.player.posY][this.player.posX - 1] == "obj"
       ) {
         if (this.#maze[this.player.posY][this.player.posX - 1] == "b") {
           this.player.setHealth(this.player.health - 3);
+        } else if (
+          this.#maze[this.player.posY][this.player.posX - 1] == "obj"
+        ) {
+          this.player.setHealth(this.player.health + 10);
+          this.#maze[this.player.posY][this.player.posX - 1] = 1;
         } else {
           this.#maze[this.player.posY][this.player.posX] = 1;
           this.player.posX -= 1;
@@ -467,10 +496,16 @@ export default new (class Party {
         (event.key.toLowerCase() == this.#CONTROL.right &&
           this.#maze[this.player.posY][this.player.posX + 1] == 1) ||
         this.#maze[this.player.posY][this.player.posX + 1] == "b" ||
-        this.#maze[this.player.posY][this.player.posX + 1] == "arr"
+        this.#maze[this.player.posY][this.player.posX + 1] == "arr" ||
+        this.#maze[this.player.posY][this.player.posX + 1] == "obj"
       ) {
         if (this.#maze[this.player.posY][this.player.posX + 1] == "b") {
           this.player.setHealth(this.player.health - 3);
+        } else if (
+          this.#maze[this.player.posY][this.player.posX + 1] == "obj"
+        ) {
+          this.player.setHealth(this.player.health + 10);
+          this.#maze[this.player.posY][this.player.posX + 1] = 1;
         } else {
           this.#maze[this.player.posY][this.player.posX] = 1;
           this.player.posX += 1;
