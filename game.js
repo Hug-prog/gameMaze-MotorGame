@@ -3,6 +3,7 @@ import Bot from "./Bot.js";
 import entity from "./Entity.js";
 import Arrow from "./Arrow.js";
 import Engine from "./Engine.js";
+import callPHP, { endGame } from "./Php.js";
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -82,7 +83,7 @@ export default new (class Party {
         } else if (vw == "arr") {
           ligne += '<td name="arr" bgcolor="red" class="arr" alt=""></td>';
         } else if (vw == "obj") {
-          ligne += '<td name="arr" bgcolor="green" class="arr" alt=""></td>';
+          ligne += '<td name="tdheart" class="arr" alt=""></td>';
         } else {
           ligne += '<td bgcolor="black" alt=""></td>';
         }
@@ -178,6 +179,13 @@ export default new (class Party {
   StopRenderObj(obj) {
     this.#objMaze[obj] = false;
     return this;
+  }
+
+  buildObjMaze() {
+    // put obj player in maze in interval
+    setTimeout(() => {
+      this.StartRenderObj("bostPv");
+    }, "1000");
   }
 
   BuildRandomMaze(w, h) {
@@ -420,12 +428,15 @@ export default new (class Party {
     // put bots in maze
     this.SpawnBot();
 
-    // put obj player in maze
-    this.StartRenderObj("bostPv");
+    // create btn stop game
+    let stopGame = document.querySelector(".btnStopGame");
+    stopGame.addEventListener("click", () => {
+      endGame(this.player.id, this.player.health);
+    });
 
-    //this.#renderObjMaze(this.#maze, this.#objMaze.bostPv);
-
+    // if keyboard event
     document.addEventListener("keydown", event => {
+      // for up
       if (
         (event.key.toLowerCase() == this.#CONTROL.up &&
           this.#maze[this.player.posY - 1][this.player.posX] == 1) ||
@@ -435,6 +446,8 @@ export default new (class Party {
       ) {
         if (this.#maze[this.player.posY - 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
+          // get health
+          this.buildObjMaze();
         } else if (
           this.#maze[this.player.posY - 1][this.player.posX] == "obj"
         ) {
@@ -457,6 +470,8 @@ export default new (class Party {
       ) {
         if (this.#maze[this.player.posY + 1][this.player.posX] == "b") {
           this.player.setHealth(this.player.health - 3);
+          // get health
+          this.buildObjMaze();
         } else if (
           this.#maze[this.player.posY + 1][this.player.posX] == "obj"
         ) {
@@ -479,6 +494,8 @@ export default new (class Party {
       ) {
         if (this.#maze[this.player.posY][this.player.posX - 1] == "b") {
           this.player.setHealth(this.player.health - 3);
+          // get health
+          this.buildObjMaze();
         } else if (
           this.#maze[this.player.posY][this.player.posX - 1] == "obj"
         ) {
@@ -501,6 +518,8 @@ export default new (class Party {
       ) {
         if (this.#maze[this.player.posY][this.player.posX + 1] == "b") {
           this.player.setHealth(this.player.health - 3);
+          // get health
+          this.buildObjMaze();
         } else if (
           this.#maze[this.player.posY][this.player.posX + 1] == "obj"
         ) {
